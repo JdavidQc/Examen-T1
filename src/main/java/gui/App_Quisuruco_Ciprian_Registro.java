@@ -32,7 +32,6 @@ public class App_Quisuruco_Ciprian_Registro extends JFrame implements ActionList
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
-	private JTable table;
 	private JLabel lblFechaEdicion;
 	private JTextField txtFecha;
 	private JComboBox<String> cboAutor;
@@ -44,7 +43,6 @@ public class App_Quisuruco_Ciprian_Registro extends JFrame implements ActionList
 	private JLabel lblHojas;
 	private JLabel lblCategoria;
 	private JLabel lblNewLabel;
-	private JScrollPane scrollPane;
 	private JButton btnAgregar;
 
 	public static void main(String[] args) {
@@ -54,7 +52,7 @@ public class App_Quisuruco_Ciprian_Registro extends JFrame implements ActionList
 	}
 
 	public App_Quisuruco_Ciprian_Registro() {
-		setBounds(0,0,373,500);
+		setBounds(0,0,373,314);
 		setLocationRelativeTo(null);
 		
 		JPanel conatiner = new JPanel();
@@ -117,22 +115,14 @@ public class App_Quisuruco_Ciprian_Registro extends JFrame implements ActionList
 		
 		btnAgregar = new JButton("Agregar");
 		btnAgregar.addActionListener(this);
-		btnAgregar.setBounds(238, 89, 89, 36);
+		btnAgregar.setBounds(238, 24, 89, 36);
 		panel.add(btnAgregar);
 		
-		scrollPane = new JScrollPane();
-		scrollPane.setBounds(10, 275, 337, 175);
-		conatiner.add(scrollPane);
-		
-		table = new JTable();
-		scrollPane.setViewportView(table);
-		
-		dtm.addColumn("Nombre");
-		dtm.addColumn("Categoria");
-		dtm.addColumn("Hoja");
-		dtm.addColumn("Cod.Autor");
-		dtm.addColumn("Edicion");
-		table.setModel(dtm);
+		btnNewButton = new JButton("Listado");
+		btnNewButton.addActionListener(this);
+		btnNewButton.setBounds(238, 96, 89, 45);
+		panel.add(btnNewButton);
+
 		
 		lblNewLabel_1 = new JLabel("Registro de Libro");
 		lblNewLabel_1.setFont(new Font("Tahoma", Font.ITALIC, 17));
@@ -141,10 +131,8 @@ public class App_Quisuruco_Ciprian_Registro extends JFrame implements ActionList
 		conatiner.add(lblNewLabel_1);
 		
 		listaCombo();
-		listarLibro();
 		
 	}
-	private DefaultTableModel dtm = new DefaultTableModel();
 	private EntityManagerFactory fabrica=Persistence.createEntityManagerFactory("mysql");
 	
 	private void listaCombo() {
@@ -167,23 +155,13 @@ public class App_Quisuruco_Ciprian_Registro extends JFrame implements ActionList
 	}
 	private int fila;
 	private JLabel lblNewLabel_1;
-	private void listarLibro() {
-		EntityManager em=fabrica.createEntityManager();
-		
-		TypedQuery<Libro> query=em.createQuery("Select l  from Libro l", Libro.class);
-		List<Libro> lstAutor= query.getResultList();
-		dtm.setRowCount(0);
-		if(lstAutor.size()>0) {
-			for(Libro l: lstAutor) {
-			  Object[] fila= {l.getNombre(),l.getCate(),l.getN_hoja(),l.getId_autor(),l.getFecha_edicion()};
-			  dtm.addRow(fila);
- 
-			}
-			fila=lstAutor.size()+1;
-		}
-		em.close();
-	}
+	private JButton btnNewButton;
+
+
 	public void actionPerformed(ActionEvent e) {
+		if (e.getSource() == btnNewButton) {
+			actionPerformedBtnNewButton(e);
+		}
 		if (e.getSource() == btnAgregar) {
 			actionPerformedBtnAgregar(e);
 		}
@@ -205,7 +183,6 @@ public class App_Quisuruco_Ciprian_Registro extends JFrame implements ActionList
 				em.getTransaction().commit();
 				JOptionPane.showMessageDialog(null,"Registrado ok");
 				em.close();
-				listarLibro();
 			}else {
 				JOptionPane.showMessageDialog(null,"Fecha de Formato YYYY-MM-DD");
 			}
@@ -250,5 +227,9 @@ public class App_Quisuruco_Ciprian_Registro extends JFrame implements ActionList
 		if(!Character.isLetter(e.getKeyChar())|| txtNombre.getText().length()>60) {
 			e.consume();
 			}
+	}
+	protected void actionPerformedBtnNewButton(ActionEvent e) {
+		App_Quisuruco_Ciprian_Consulta c = new App_Quisuruco_Ciprian_Consulta();
+		c.setVisible(true);
 	}
 }
